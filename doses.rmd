@@ -1,0 +1,214 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, message=FALSE}
+library(readxl)
+setwd("D:/freelancer/data analysis/mahmoud werby/zewail project")
+data <-  read_excel("D:/freelancer/data analysis/mahmoud werby/zewail project/inflammatory cytokines copy.xlsx")
+```
+
+```{r, message=FALSE}
+##loading packages
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+```
+
+
+```{r}
+###releveling groups
+data$group <- factor(data$group, levels = c("Untreated","Rifampicin", "Uio-66", "Rif@Uio-66", "LysB/Rif@Uio-66","LPS"))
+```
+
+
+
+
+```{r}
+#visualization of action of different drugs on different groups over time
+ggplot(data = data, aes(x = group, y = lab ))+
+  stat_summary(fun = "mean",geom = "bar", aes(fill =group ))+
+  stat_summary(fun.data = "mean_sdl", geom = "errorbar", aes(color = group) )+
+  facet_grid(inflam_mediator ~ time, scales = "free_y",switch = "y" ) +
+  theme(panel.background  = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90,face = "bold"),
+        text = element_text(size = 14, face = "bold"),
+        axis.text.y.left = element_text(size = 10,face = "bold"),
+        legend.text = element_text(size = 12, face = "bold"),
+        strip.background.y = element_blank(),
+        strip.background.x = element_blank(),
+        strip.text.x = element_text(size = 16),
+        strip.placement = "outside")+
+  ylab("Concentration (pg/mL)") +
+  xlab("Different Groups")
+  
+  
+  
+
+```
+
+
+
+
+
+```{r, message=FALSE}
+library(readxl)
+setwd("D:/freelancer/data analysis/mahmoud werby/zewail project")
+distribution <-  read_excel("D:/freelancer/data analysis/mahmoud werby/zewail project/distribution.xlsx")
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(data= distribution, aes(x = organ, y = labs))+
+  stat_summary(fun = "mean",geom = "bar", aes(fill = time ), position = "dodge")+
+  stat_summary(fun.data = mean_sdl, geom = "errorbar", aes(color = time), position = "dodge" )+
+  facet_grid(groups~., scales = "free_y",switch = "y") +
+  theme(text = element_text(size = 14, face = "bold"),
+    panel.background  = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90,face = "bold"),
+        axis.text.y.left = element_text(size = 14,face = "bold"),
+        legend.text = element_text(size = 14, face = "bold"),
+        strip.background.y = element_blank(),
+        strip.background.x = element_blank(),
+        strip.placement = "outside",
+        strip.text.y = element_text(size = 14 , face = "bold")) +
+  ylab("Mass of Group per Mass of Organ (mg/Kg)")
+
+
+```
+
+
+
+
+
+```{r}
+library(ggplot2)
+
+ggplot(data= distribution, aes(x = organ, y = labs))+
+  stat_summary(fun = "mean",geom = "bar", aes(fill = organ ))+
+  stat_summary(fun.data = mean_sdl, geom = "errorbar", aes(color = organ))+
+  facet_grid(groups~.) +
+  theme(panel.background  = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90,face = "bold"),
+        text = element_text(size = 14, face = "bold"),
+        axis.text.y.left = element_text(size = 14,face = "bold"),
+        legend.text = element_text(size = 14, face = "bold"),
+        strip.background.y = element_blank(),
+        strip.background.x = element_blank())+
+  ylab("Concentration (pg/mL)") +
+  xlab("Different Organs")
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+library(readxl)
+setwd("D:/freelancer/data analysis/mahmoud werby/zewail project")
+cell_viability <- read_excel("D:/freelancer/data analysis/mahmoud werby/zewail project/cell viability.xlsx")
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(data = cell_viability, aes(x = factor(conc), y = viab)) +
+  stat_summary(fun = "mean",geom = "bar", aes(fill = sample ), position = "dodge")+
+  geom_errorbar(aes(ymin = viab -sd, ymax = viab + sd, color = sample ), width = 0.2) +
+  facet_grid(~sample, scales = "free_y",switch = "x") +
+  scale_y_continuous(limits = c(0,120), breaks = seq(0,120,10))+
+  theme(text = element_text(size = 14, face = "bold"),
+    panel.background  = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 90,face = "bold"),
+        axis.text.y.left = element_text(size = 14,face = "bold"),
+        legend.text = element_text(size = 14, face = "bold"),
+        strip.background.y = element_blank(),
+        strip.background.x = element_blank(),
+        strip.placement = "outside",
+        strip.text.y = element_text(size = 14 , face = "bold")) +
+  ylab("Cell Viability (%)")+
+  xlab("Concentration")
+
+
+
+  
+```
+```{r}
+###import bal fluids
+library(readxl)
+bal <- read_excel("BAL fluid.xlsx")
+```
+
+
+
+```{r}
+
+bal$sample <- factor(bal$sample , levels = c("Untreated","Rifampicin", "Uio-66", "Rif@uio-66", "LysB/Rif@uio-66","LPS"))
+
+library(ggplot2)
+ggplot(data = bal, aes(x = sample, y = ldh_activ)) +
+  stat_summary(fun = "mean",geom = "bar", aes(fill = sample ), position = "dodge")+
+  geom_errorbar(aes(ymin = ldh_activ - activ_sd, ymax = ldh_activ + activ_sd, color = sample ), width = 0.2) +
+  theme(text = element_text(size = 14, face = "bold"),
+    panel.background  = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 20,face = "bold", size = 14),
+        axis.text.y.left = element_text(size = 14,face = "bold"),
+        legend.text = element_text(size = 14, face = "bold"),
+        strip.background.y = element_blank(),
+        strip.background.x = element_blank(),
+        strip.placement = "outside",
+        strip.text.y = element_text(size = 14 , face = "bold")) +
+  ylab("LDH Activity (U/mL)")+
+  xlab(" ")+
+  scale_y_continuous(limits = c(0,100), breaks = seq(0,100,10))
+
+
+
+  
+```
+
+
+
+
+
+```{r}
+
+bal$sample <- factor(bal$sample , levels = c("Untreated","Rifampicin", "Uio-66", "Rif@uio-66", "LysB/Rif@uio-66","LPS"))
+
+library(ggplot2)
+ ggplot(data = bal, aes(x = sample, y = protein_conc)) +
+  stat_summary(fun = "mean",geom = "bar", aes(fill = sample ), position = "dodge")+
+  geom_errorbar(aes(ymin = protein_conc - conc_sd, ymax = protein_conc + conc_sd, color = sample ), width = 0.2) +
+  theme(text = element_text(size = 14, face = "bold"),
+    panel.background  = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.text.x = element_text(angle = 20,face = "bold", size = 14),
+        axis.text.y.left = element_text(size = 14,face = "bold"),
+        legend.text = element_text(size = 14, face = "bold"),
+        strip.background.y = element_blank(),
+        strip.background.x = element_blank(),
+        strip.placement = "outside",
+        strip.text.y = element_text(size = 14 , face = "bold")) +
+  ylab("Protein Concentration (mcg/mL)")+
+  xlab(" ") + 
+  scale_y_continuous(breaks = seq(0,1000,100))
+
+
+
+
+  
+```
